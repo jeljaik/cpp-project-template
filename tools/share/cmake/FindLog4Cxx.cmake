@@ -1,22 +1,28 @@
-# Michael Aaron Safyan (michaelsafyan@gmail.com). Copyright (C) 2009. Simplified BSD License.
-INCLUDE (FindPackageHandleStandardArgs)
-FIND_PACKAGE(PkgConfig ${Log4Cxx_FIND_REQUIRED} ${Log4Cxx_FIND_QUIETLY})
-IF (PKG_CONFIG_FOUND)
-    SET(PKG_CONFIG_PATH_ENV_VAR $ENV{PKG_CONFIG_PATH})
-    IF (NOT PKG_CONFIG_PATH_ENV_VAR)
-        IF (Log4Cxx_FIND_REQUIRED)
-        	MESSAGE (FATAL_ERROR "Environment variable PKG_CONFIG_PATH not set. Setting this variable is required in order for pkg-config to locate installed software packages.")
-        ENDIF (Log4Cxx_FIND_REQUIRED)
-    ENDIF (NOT PKG_CONFIG_PATH_ENV_VAR)
-    PKG_CHECK_MODULES (Log4Cxx liblog4cxx)
-    IF (Log4Cxx_FOUND)
-        SET(Log4Cxx_LIBRARY ${Log4Cxx_LIBRARIES})
-        SET(Log4Cxx_INCLUDE_DIR ${Log4Cxx_INCLUDEDIR})
-        SET(Log4Cxx_LIBRARY_DIR ${Log4Cxx_LIBRARY_DIRS})
-        IF (NOT Log4Cxx_FIND_QUIETLY)
-            MESSAGE(STATUS "    includedir: ${Log4Cxx_INCLUDE_DIR}")
-            MESSAGE(STATUS "    librarydir: ${Log4Cxx_LIBRARY_DIR}")
-        ENDIF (NOT Log4Cxx_FIND_QUIETLY)
-    ENDIF(Log4Cxx_FOUND)
-ENDIF (PKG_CONFIG_FOUND)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(Log4Cxx DEFAULT_MSG Log4Cxx_LIBRARY Log4Cxx_INCLUDE_DIR)
+#   CMake module to find LOG4CXX library
+
+INCLUDE(FindPkgConfig)
+PKG_CHECK_MODULES(PC_LOG4CXX liblog4cxx)
+
+FIND_PATH(
+    LOG4CXX_INCLUDE_DIRS
+    NAMES log4cxx/log4cxx.h
+    HINTS $ENV{LOG4CXX_DIR}/include
+        ${PC_LOG4CXX_INCLUDE_DIRS}
+    PATHS /usr/local/include
+          /usr/include
+)
+
+FIND_LIBRARY(
+    LOG4CXX_LIBRARIES
+    NAMES log4cxx
+    HINTS $ENV{LOG4CXX_DIR}/lib
+        ${PC_LOG4CXX_LIBRARIES}
+    PATHS /usr/local/lib
+          /usr/local/lib64
+          /usr/lib
+          /usr/lib64
+)
+
+INCLUDE(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(LOG4CXX DEFAULT_MSG LOG4CXX_LIBRARIES LOG4CXX_INCLUDE_DIRS)
+MARK_AS_ADVANCED(LOG4CXX_LIBRARIES LOG4CXX_INCLUDE_DIRS)

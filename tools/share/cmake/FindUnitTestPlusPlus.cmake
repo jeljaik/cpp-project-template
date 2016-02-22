@@ -1,25 +1,57 @@
-#
+# Same as FindUnitTest++.cmake in libopenshot
 # This CMake Module locates the UnitTest++ (http://unittest-cpp.sourceforge.net/)
-# C++ unit testing framework, enabling FIND_PACKAGE(UnitTestPlusPlus) to work. 
+# C++ unit testing framework, enabling FIND_PACKAGE(UnitTestPlusPlus) to work.
 #
 
-FIND_PATH(UnitTestPlusPlus_INCLUDE_DIR NAMES unittest++/UnitTest++.h)
-MARK_AS_ADVANCED(UnitTestPlusPlus_INCLUDE_DIR)
+FIND_PATH(UNITTEST++_INCLUDE_DIR UnitTest++.h
+    ${UNITTEST_DIR}/include/unittest++
+    $ENV{UNITTEST_DIR}/include/unittest++
+	$ENV{UNITTEST_DIR}/src
+    $ENV{UNITTEST_DIR}
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/include
+    /usr/include
+    /usr/include/unittest++
+    /usr/include/UnitTest++ # Fedora
+    /usr/include/unittest-cpp # openSUSE
+    /usr/local/include/UnitTest++/ # Arch
+    /sw/include # Fink
+    /opt/local/include # DarwinPorts
+    /opt/local/include/UnitTest++
+    /opt/csw/include # Blastwave
+    /opt/include
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment]/include
+    /usr/freeware/include
+)
 
-FIND_LIBRARY(UnitTestPlusPlus_LIBRARY NAMES UnitTest++)
-MARK_AS_ADVANCED(UnitTestPlusPlus_LIBRARY)
+FIND_LIBRARY(UNITTEST++_LIBRARY
+    NAMES unittest++ UnitTest++
+    PATHS
+    ${UNITTEST_DIR}/lib
+    $ENV{UNITTEST_DIR}/lib
+	$ENV{UNITTEST_DIR}/build
+    $ENV{UNITTEST_DIR}
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib
+    /usr/lib
+    /usr/lib64/ # Fedora
+    /sw/lib
+    /opt/local/lib
+    /opt/csw/lib
+    /opt/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment]/lib
+    /usr/freeware/lib64
+)
 
-INCLUDE(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(UnitTestPlusPlus DEFAULT_MSG UnitTestPlusPlus_LIBRARY UnitTestPlusPlus_INCLUDE_DIR)
+SET(UNITTEST++_FOUND "NO")
+IF(UNITTEST++_LIBRARY AND UNITTEST++_INCLUDE_DIR)
+    SET(UNITTEST++_FOUND "YES")
+ENDIF(UNITTEST++_LIBRARY AND UNITTEST++_INCLUDE_DIR)
 
-IF ("${UnitTestPlusPlus_INCLUDE_DIR}" MATCHES "NOTFOUND")
-    SET (UnitTestPlusPlus_LIBRARY)
-    SET (UnitTestPlusPlus_INCLUDE_DIR)
-ELSEIF ("${UnitTestPlusPlus_LIBRARY}" MATCHES "NOTFOUND")
-    SET (UnitTestPlusPlus_LIBRARY)
-    SET (UnitTestPlusPLus_INCLUDE_DIR)
-ELSE ("${UnitTestPlusPlus_INCLUDE_DIR}" MATCHES "NOTFOUND")
-    SET (UnitTestPlusPlus_FOUND 1)
-    SET (UnitTestPlusPlus_LIBRARIES ${UnitTestPlusPlus_LIBRARY})
-    SET (UnitTestPlusPlus_INCLUDE_DIRS ${UnitTestPlusPlus_INCLUDE_DIR})
-ENDIF ("${UnitTestPlusPlus_INCLUDE_DIR}" MATCHES "NOTFOUND")
+include(FindPackageHandleStandardArgs)
+# handle the QUIETLY and REQUIRED arguments and set UNITTEST++_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args(UNITTEST++  DEFAULT_MSG
+                                  UNITTEST++_LIBRARY UNITTEST++_INCLUDE_DIR)
